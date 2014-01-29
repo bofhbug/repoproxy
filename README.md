@@ -13,3 +13,22 @@ and then create the symlinks either gitproxy or svnproxy in the same location an
 following the instructions appropriate to them.
 
 ("clone" form http://www.darraghbailey.com/wordpress/?p=23 )
+
+
+# GIT
+#
+# gitproxy
+#  git config --global core.gitproxy gitproxy
+#
+# More details and original at
+# http://www.emilsit.net/blog/archives/how-to-use-the-git-protocol-through-a-http-connect-proxy/
+#
+
+# SVN
+#
+# svnproxy
+#  edit ~/.subversion/config and add "socat = <path to script>" under the tunnels section
+#
+# then whenever using svn, simply change the line "svn://" to read "svn+socat://"
+# and continue to use as normal
+#
