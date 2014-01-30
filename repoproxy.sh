@@ -15,8 +15,8 @@
 
 # GIT
 #
-# gitproxy
-#  git config --global core.gitproxy gitproxy
+# gitproxy.sh
+#  git config --global core.gitproxy gitproxy.sh
 #
 # More details and original at
 # http://www.emilsit.net/blog/archives/how-to-use-the-git-protocol-through-a-http-connect-proxy/
@@ -24,12 +24,15 @@
 
 # SVN
 #
-# svnproxy
+# svnproxy.sh
 #  edit ~/.subversion/config and add "socat = <path to script>" under the tunnels section
 #
 # then whenever using svn, simply change the line "svn://" to read "svn+socat://"
 # and continue to use as normal
 #
+
+set -xv
+
 
 # Need proxy settings
 [[ -z "${http_proxy}" ]] && \
@@ -38,19 +41,26 @@
 
 _proxy=${http_proxy%:*}
 _proxyport=
+
+[[ "${_proxy#*//}" != "${_proxy}" ]] && _proxy=${_proxy#*//}
+
 if [[ "${http_proxy#*:}" != "${_proxy}" ]]
 then
     _proxyport=${http_proxy#*:}
+	[[ "${_proxyport#*:}" != "${_proxyport}" ]] && _proxyport=${_proxyport#*:}
+	[[ "${_proxyport%/*}" != "${_proxyport}" ]] && _proxyport=${_proxyport%/*}
 fi
 
 case ${0##*/} in
-    "svnproxy")
+    "svnproxy.sh")
         targetserver="${1#*@}"
-        targetport="3690"
-        ;;
-    "gitproxy")
+	####[[ -z "${2}" ]] && targetport="3690" || targetport=$2
+	targetport="3690"
+	;;
+    "gitproxy.sh")
         targetserver=$1
-        targetport=$2
+        #http://git-scm.com/book/ch4-1.html
+	[[ -z "${2}" ]] && targetport="9418" || targetport=$2
         ;;
     *)
         echo "Unknown usage! ${0##*/} is not a recognised command"
